@@ -1,12 +1,61 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="using:Inbres.TestWork.ShapeEditor.Editor.Widgets.ShapesEditor"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:shapes="using:Inbres.TestWork.ShapeEditor.Editor.Entities.Shapes"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Inbres.TestWork.ShapeEditor.Editor.ShapesEditorControl">
+             x:Class="Inbres.TestWork.ShapeEditor.Editor.ShapesEditorControl"
+             x:DataType="local:ShapeEditorViewModel">
 
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="shapes:OvalShape">
+            <Canvas>
+                <Ellipse Width="{Binding Width}"
+                         Height="{Binding Height}"
+                         Fill="Blue"
+                         Stroke="Black"
+                         StrokeThickness="1">
+                    <Ellipse.RenderTransform>
+                        <TranslateTransform X="{Binding X}" Y="{Binding Y}" />
+                    </Ellipse.RenderTransform>
+                </Ellipse>
+            </Canvas>
+        </DataTemplate>
+
+    </UserControl.DataTemplates>
+
+
+    
     <Grid>
-        <Canvas x:Name="DrawingCanvas" Background="green"/>
-        <Button Content="Add figure" VerticalAlignment="Top" Background="white" Width="70"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="0"
+                    HorizontalAlignment="Left"
+                    Spacing="15"
+                    Margin="14,6">
+
+            <Button Content="Add Oval"
+                    Width="60"
+                    Margin="0,0,0,0"
+                    Command="{Binding AddOvalCommand}"/>
+
+            <Button Content="Add BezierCurve"
+                    Width="120"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Background="Transparent">
+            <ItemsControl ItemsSource="{Binding Shapes}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas ClipToBounds="True"/>             
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Grid>
     </Grid>
 </UserControl>

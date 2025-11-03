@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Inbres.TestWork.ShapeEditor.Editor.Entities.Shapes
 {
-    public abstract class Shape
+    public abstract class EditorShape
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Name { get; set; } = string.Empty;
         public abstract ShapeType Type { get; }
+        public double X { get; set; }
+        public double Y { get; set; }
     }
 
     public enum ShapeType

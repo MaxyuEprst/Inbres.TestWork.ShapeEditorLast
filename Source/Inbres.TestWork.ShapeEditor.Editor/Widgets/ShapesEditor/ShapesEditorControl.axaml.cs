@@ -10,6 +10,6 @@ public partial class ShapesEditorControl : UserControl
     public ShapesEditorControl()
     {
         InitializeComponent();
-        DataContext = new ViewModelBase();
+        DataContext = new ShapeEditorViewModel();
     }
 }
