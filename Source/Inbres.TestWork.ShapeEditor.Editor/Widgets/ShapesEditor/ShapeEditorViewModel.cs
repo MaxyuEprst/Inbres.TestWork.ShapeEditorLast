@@ -18,11 +18,25 @@ namespace Inbres.TestWork.ShapeEditor.Editor.Widgets.ShapesEditor
         [ObservableProperty]
         private EditorShape? _selectedShape;
 
+        public ShapeEditorViewModel()
+        {
+            // Подписка на изменения коллекции
+            Shapes.CollectionChanged += (s, e) =>
+            {
+                System.Diagnostics.Debug.WriteLine($"CollectionChanged: {e.Action}");
+                if (e.NewItems != null)
+                    System.Diagnostics.Debug.WriteLine($"Добавлено: {e.NewItems.Count} элементов");
+                if (e.OldItems != null)
+                    System.Diagnostics.Debug.WriteLine($"Удалено: {e.OldItems.Count} элементов");
+
+                System.Diagnostics.Debug.WriteLine($"Всего: {Shapes.Count} элементов");
+            };
+            
+        }
 
         [RelayCommand]
         private void AddOval()
         {
-            System.Diagnostics.Debug.WriteLine("AddOval вызван!");
             var oval = new OvalShape
             {
                 X = 10,
@@ -37,7 +51,6 @@ namespace Inbres.TestWork.ShapeEditor.Editor.Widgets.ShapesEditor
         [RelayCommand]
         private void AddBezierCurve()
         {
-            // Будущая реализация
         }
 
         [RelayCommand]
