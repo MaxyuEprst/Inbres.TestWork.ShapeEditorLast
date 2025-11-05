@@ -1,9 +1,8 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Editor.ViewModels;
 
-namespace Editor
+namespace Editor.Shared
 {
     public class ViewLocator : IDataTemplate
     {

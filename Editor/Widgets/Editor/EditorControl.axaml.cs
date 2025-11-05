@@ -16,7 +16,7 @@ namespace Editor
             if (DataContext is EditorViewModel viewModel && sender is Border border)
             {
                 var position = e.GetPosition(border);
-                viewModel.AddOvalAtPosition(position.X, position.Y);
+                viewModel.CreateShapeAtPoint(position);
             }
         }
     }

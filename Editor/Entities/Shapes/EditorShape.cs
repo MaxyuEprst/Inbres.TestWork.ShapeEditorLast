@@ -16,6 +16,7 @@ namespace Editor.Entities.Shapes
     public enum ShapeType
     {
         Oval,
-        BezierCurve
+        BezierCurve,
+        None
     }
 }

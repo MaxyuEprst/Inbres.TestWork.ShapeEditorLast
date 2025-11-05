@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:shapes="using:Editor.Entities.Shapes"
+             xmlns:system="using:System"
              xmlns:vm="using:Editor.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Editor.EditorControl"
@@ -35,9 +36,9 @@
                 </ItemsPanelTemplate>
               </ItemsControl.ItemsPanel>
             <ItemsControl.Styles>
-                <Style Selector="ItemsControl ContentPresenter">
-                    <Setter Property="Canvas.Left" Value="25" />
-                    <Setter Property="Canvas.Top" Value="25" />
+                <Style Selector="ContentPresenter">
+                    <Setter Property="Canvas.Left" Value="{Binding Shapes[0].X}" />
+                    <Setter Property="Canvas.Top" Value="{Binding Shapes[0].Y}" />
                 </Style>
             </ItemsControl.Styles>
             <ItemsControl.ItemTemplate>

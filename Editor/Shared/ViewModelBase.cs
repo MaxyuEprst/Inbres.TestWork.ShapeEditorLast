@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Editor.ViewModels
+namespace Editor.Shared
 {
     public class ViewModelBase : ObservableObject
     {
