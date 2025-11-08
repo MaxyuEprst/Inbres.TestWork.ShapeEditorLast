@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Avalonia;
 using Editor.Entities.Shapes;
 
@@ -17,7 +13,7 @@ namespace Editor.Widgets.Editor
         {
             EditorShape newShape = shapeType switch
             {
-                ShapeType.Oval => new OvalShape {Width=20, Height=20, X = point.X + 50, Y = point.Y - 30 },
+                ShapeType.Oval => new OvalShape {Width=60, Height=60, X = point.X, Y = point.Y },
                 ShapeType.BezierCurve => new BezCurShape { X = point.X, Y = point.Y },
                 _ => throw new NotImplementedException()
             };

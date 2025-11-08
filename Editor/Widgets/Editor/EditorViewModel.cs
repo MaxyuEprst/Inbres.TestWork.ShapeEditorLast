@@ -35,7 +35,6 @@ namespace Editor.ViewModels
             _model.Shapes.CollectionChanged += (s, e) => OnPropertyChanged(nameof(Shapes));
         }
 
-        // Только геттер - данные из Model
         public ObservableCollection<EditorShape> Shapes => _model.Shapes;
 
         [RelayCommand]
