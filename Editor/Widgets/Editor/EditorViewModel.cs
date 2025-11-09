@@ -18,7 +18,7 @@ namespace Editor.ViewModels
         private bool _isDrawing = false;
 
         [ObservableProperty]
-        private ShapeType _currentShapeType = ShapeType.Oval;
+        private ShapeType _currentShapeType = ShapeType.None;
 
         [ObservableProperty]
         private EditorShape? _selectedShape;
@@ -36,19 +36,6 @@ namespace Editor.ViewModels
         }
 
         public ObservableCollection<EditorShape> Shapes => _model.Shapes;
-
-        [RelayCommand]
-        private void AddOval()
-        {
-            var oval = new OvalShape
-            {
-                X = 100,
-                Y = 100,
-                Width = 80,
-                Height = 60
-            };
-            Shapes.Add(oval);
-        }
 
         public void StartCreatingShape(Point position)
         {
