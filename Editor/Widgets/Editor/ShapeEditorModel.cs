@@ -9,30 +9,17 @@ namespace Editor.Widgets.Editor
     {
         public ObservableCollection<EditorShape> Shapes { get; } = new();
 
-        public void CreateShape(ShapeType shapeType, Point point, double width, double height)
+        public void CreateShape(ShapeType shapeType, Point point)
         {
             EditorShape newShape = shapeType switch
             {
-                ShapeType.Oval => new OvalShape
-                {
-                    X = point.X,
-                    Y = point.Y,
-                    Width = width,
-                    Height = height
-                },
-                ShapeType.BezierCurve => new BezCurShape
-                {
-                    X = point.X,
-                    Y = point.Y,
-                    Width = width,
-                    Height = height
-                },
+                ShapeType.Oval => new OvalShape {Width=60, Height=60, X = point.X, Y = point.Y },
+                ShapeType.BezierCurve => new BezCurShape { X = point.X, Y = point.Y },
                 _ => throw new NotImplementedException()
             };
 
             Shapes.Add(newShape);
         }
-
 
         public void RemoveShape(EditorShape shape)
         {
