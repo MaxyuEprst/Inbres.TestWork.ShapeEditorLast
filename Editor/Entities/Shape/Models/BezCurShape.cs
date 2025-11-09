@@ -14,5 +14,13 @@ namespace Editor.Entities.Shape.Models
 
         [ObservableProperty]
         private Geometry? _bezierGeometry;
+
+        public BezCurShape()
+        {
+            _points.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(Points));
+            };
+        }
     }
 }

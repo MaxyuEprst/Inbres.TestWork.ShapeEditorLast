@@ -15,6 +15,8 @@ namespace Editor.ViewModels
         private Point _startPoint;
         private EditorShape? _currentShape;
 
+        private bool _isBezierControlPhase = false;
+
         [ObservableProperty]
         private bool _isDrawing = false;
 
@@ -28,69 +30,99 @@ namespace Editor.ViewModels
         private void ChangeMod(ShapeType shapeType)
         {
             CurrentShapeType = shapeType;
+            CancelCurrentDrawing();
         }
 
         public EditorViewModel()
         {
-            _model = new ShapeEditorModel();        
+            _model = new ShapeEditorModel();
         }
 
         public ObservableCollection<EditorShape> Shapes => _model.Shapes;
 
-        public void StartDrawing(Point position)
+        public void OnPointerPressed(Point position)
         {
-            if (CurrentShapeType == ShapeType.None) return;
+            if (CurrentShapeType == ShapeType.None)
+                return;
 
-            _startPoint = position;
-            IsDrawing = true;
-
+            // OVAL: стандартное поведение (начать рисование)
             if (CurrentShapeType == ShapeType.Oval)
             {
+                _startPoint = position;
+                IsDrawing = true;
                 _currentShape = _model.CreateShape(ShapeType.Oval, position, 0, 0);
+                return;
             }
-            else if (CurrentShapeType == ShapeType.BezierCurve)
+
+
+            if (CurrentShapeType == ShapeType.BezierCurve)
             {
-                _currentShape = new BezCurShape();
-                Shapes.Add(_currentShape);
-                ((BezCurShape)_currentShape).Points.Add(position);
+                if (!_isBezierControlPhase)
+                {
+                    var bez = new BezCurShape();
+                    Shapes.Add(bez);
+                    _currentShape = bez;
+
+                    bez.Points.Add(position);
+                    bez.Points.Add(position); 
+
+                    IsDrawing = true;
+                    _isBezierControlPhase = true;
+                }
+                else
+                {
+                    if (_currentShape is BezCurShape bezier)
+                    {
+                        bezier.Points.Add(position); 
+                    }
+
+                    _currentShape = null;
+                    IsDrawing = false;
+                    _isBezierControlPhase = false;
+                }
             }
         }
 
-        public void UpdateDrawing(Point position)
+        public void OnPointerMoved(Point position)
         {
-            if (!IsDrawing || _currentShape == null) return;
+            if (CurrentShapeType == ShapeType.None) return;
 
             if (CurrentShapeType == ShapeType.Oval)
             {
+                if (!IsDrawing || _currentShape == null) return;
                 UpdateOval(position);
             }
             else if (CurrentShapeType == ShapeType.BezierCurve)
             {
-                UpdateBezier(position);
+                if (_isBezierControlPhase && _currentShape is BezCurShape bezier && bezier.Points.Count >= 2)
+                {
+                    bezier.Points[1] = position;
+                }
             }
         }
 
-        public void FinishDrawing(Point position)
+        public void OnPointerReleased(Point position)
         {
-            if (!IsDrawing) return;
+            if (CurrentShapeType == ShapeType.None) return;
 
             if (CurrentShapeType == ShapeType.Oval)
             {
-                if (_currentShape?.Width < 2 || _currentShape?.Height < 2)
+                if (!IsDrawing || _currentShape == null)
+                {
+                    IsDrawing = false;
+                    _currentShape = null;
+                    return;
+                }
+
+                if (_currentShape.Width < 2 || _currentShape.Height < 2)
                 {
                     _model.RemoveShape(_currentShape);
                 }
-            }
-            else if (CurrentShapeType == ShapeType.BezierCurve)
-            {
-                if (_currentShape is BezCurShape bezier && bezier.Points.Count < 2)
-                {
-                    _model.RemoveShape(_currentShape);
-                }
+
+                IsDrawing = false;
+                _currentShape = null;
             }
 
-            IsDrawing = false;
-            _currentShape = null;
         }
 
         private void UpdateOval(Point position)
@@ -100,18 +132,30 @@ namespace Editor.ViewModels
             var width = Math.Abs(position.X - _startPoint.X);
             var height = Math.Abs(position.Y - _startPoint.Y);
 
+            if (_currentShape == null) return;
+
             _currentShape.X = x;
             _currentShape.Y = y;
             _currentShape.Width = width;
             _currentShape.Height = height;
         }
 
-        private void UpdateBezier(Point position)
+
+        private void CancelCurrentDrawing()
         {
-            if (_currentShape is BezCurShape bezier && bezier.Points.Count > 0)
+            if (_currentShape != null)
             {
-                bezier.Points[^1] = position;
+                if (_currentShape is BezCurShape || _currentShape is OvalShape)
+                {
+                    if (Shapes.Contains(_currentShape))
+                        _model.RemoveShape(_currentShape);
+                }
+
+                _currentShape = null;
             }
+
+            IsDrawing = false;
+            _isBezierControlPhase = false;
         }
     }
 }

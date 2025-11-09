@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="using:Editor.Widgets.Editor"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:shapes="using:Editor.Entities.Shape.Models"
              xmlns:system="using:System"
@@ -8,6 +9,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Editor.EditorControl"
              x:DataType="vm:EditorViewModel">
+
 
       <Grid>
         <Grid.RowDefinitions>
@@ -48,15 +50,24 @@
                     <Setter Property="Canvas.Top" Value="{Binding Y}" />
                 </Style>
             </ItemsControl.Styles>
-            <ItemsControl.ItemTemplate>
+          <ItemsControl.DataTemplates>
+
                 <DataTemplate DataType="shapes:OvalShape">
-                    <Ellipse Width="{Binding Width}" Height="{Binding Height}" Stroke="Black">
+                    <Ellipse Width="{Binding Width}"
+                             Height="{Binding Height}"
+                             Stroke="Black">
                         <Ellipse.Fill>
                             <SolidColorBrush Color="black" />
                         </Ellipse.Fill>
                     </Ellipse>
                 </DataTemplate>
-            </ItemsControl.ItemTemplate>
+
+                <DataTemplate DataType="shapes:BezCurShape">
+                    <Path Stroke="Black" StrokeThickness="2"
+                          Data="{Binding Points, Converter={x:Static local:PointsToGeometryConverter.Instance}}"/>
+                </DataTemplate>
+
+            </ItemsControl.DataTemplates>
         </ItemsControl>
          </Border>
     </Grid>

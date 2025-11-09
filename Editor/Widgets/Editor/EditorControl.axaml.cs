@@ -16,7 +16,7 @@ namespace Editor
             if (DataContext is EditorViewModel vm && sender is Border border)
             {
                 var position = e.GetCurrentPoint(border).Position;
-                vm.StartDrawing(position);
+                vm.OnPointerPressed(position);
                 e.Pointer.Capture(border);
             }
         }
@@ -26,7 +26,7 @@ namespace Editor
             if (DataContext is EditorViewModel vm && sender is Border border)
             {
                 var position = e.GetCurrentPoint(border).Position;
-                vm.UpdateDrawing(position);
+                vm.OnPointerMoved(position);
             }
         }
 
@@ -35,7 +35,7 @@ namespace Editor
             if (DataContext is EditorViewModel vm && sender is Border border)
             {
                 var position = e.GetCurrentPoint(border).Position;
-                vm.FinishDrawing(position);
+                vm.OnPointerReleased(position);
                 e.Pointer.Capture(null);
             }
         }
