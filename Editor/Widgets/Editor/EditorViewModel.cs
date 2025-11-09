@@ -1,16 +1,10 @@
 ﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Editor.Entities.Shapes;
 using Editor.Shared;
 using Editor.Widgets.Editor;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
 
 namespace Editor.ViewModels
 {
@@ -75,7 +69,6 @@ namespace Editor.ViewModels
             var width = System.Math.Abs(currentPoint.X - _startPoint.X);
             var height = System.Math.Abs(currentPoint.Y - _startPoint.Y);
 
-            // Обновляем свойства фигуры
             _currentDrawingShape.X = x;
             _currentDrawingShape.Y = y;
             _currentDrawingShape.Width = width;
@@ -90,14 +83,12 @@ namespace Editor.ViewModels
 
             if (_currentDrawingShape != null)
             {
-                // Если фигура слишком маленькая, удаляем её
-                if (_currentDrawingShape.Width < 5 || _currentDrawingShape.Height < 5)
+                if (_currentDrawingShape.Width < 2 || _currentDrawingShape.Height < 2)
                 {
                     Shapes.Remove(_currentDrawingShape);
                 }
                 else
                 {
-                    // Выбираем созданную фигуру
                     SelectedShape = _currentDrawingShape;
                 }
 
