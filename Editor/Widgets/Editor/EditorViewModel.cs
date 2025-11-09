@@ -31,9 +31,7 @@ namespace Editor.ViewModels
 
         public EditorViewModel()
         {
-            _model = new ShapeEditorModel();
-            _model.Shapes.CollectionChanged += (s, e) => OnPropertyChanged(nameof(Shapes));
-        }
+            _model = new ShapeEditorModel();        }
 
         public ObservableCollection<EditorShape> Shapes => _model.Shapes;
 
