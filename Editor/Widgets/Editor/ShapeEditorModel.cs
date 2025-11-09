@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using Avalonia;
-using Editor.Entities.Shapes;
+using Editor.Entities.Shape.Models;
 
 namespace Editor.Widgets.Editor
 {

@@ -22,6 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Entities\Shape\Creation\" />
     <Folder Include="Features\Serialization\" />
+    <Folder Include="Features\Drawing\" />
   </ItemGroup>
 </Project>

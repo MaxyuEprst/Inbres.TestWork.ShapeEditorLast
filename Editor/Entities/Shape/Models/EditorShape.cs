@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-    namespace Editor.Entities.Shapes
+namespace Editor.Entities.Shape.Models
     {
         public abstract partial class EditorShape : ObservableObject
         {

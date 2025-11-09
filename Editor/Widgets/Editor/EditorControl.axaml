@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:shapes="using:Editor.Entities.Shapes"
+             xmlns:shapes="using:Editor.Entities.Shape.Models"
              xmlns:system="using:System"
              xmlns:vm="using:Editor.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -19,11 +19,15 @@
             HorizontalAlignment="Left"
             Spacing="10"
             Margin="14,6">
-        <Button Content="Oval"
-                Width="50"
-                Command="{Binding SetOvalModeCommand}" />
-        <Button Content="BezierCurve"
-                Width="100"/>
+    <Button Content="Oval"
+            Command="{Binding ChangeModCommand}"
+            CommandParameter="{x:Static shapes:ShapeType.Oval}" />
+    <Button Content="Bezier Curve" 
+            Command="{Binding ChangeModCommand}"
+            CommandParameter="{x:Static shapes:ShapeType.BezierCurve}" />
+    <Button Content="Select"
+            Command="{Binding ChangeModCommand}"
+            CommandParameter="{x:Static shapes:ShapeType.None}" />
         <Label Content="{Binding Shapes.Count}" VerticalAlignment="Center"/>
         <Label Content="{Binding CurrentShapeType}" VerticalAlignment="Center"/>
         </StackPanel>

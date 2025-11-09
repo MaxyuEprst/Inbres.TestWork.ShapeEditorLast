@@ -1,9 +1,10 @@
 ﻿using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Editor.Entities.Shapes;
+using Editor.Entities.Shape.Models;
 using Editor.Shared;
 using Editor.Widgets.Editor;
+using System;
 using System.Collections.ObjectModel;
 
 namespace Editor.ViewModels
@@ -12,7 +13,7 @@ namespace Editor.ViewModels
     {
         private readonly ShapeEditorModel _model;
         private Point _startPoint;
-        private EditorShape? _currentDrawingShape;
+        private EditorShape? _currentShape;
 
         [ObservableProperty]
         private bool _isDrawing = false;
@@ -24,60 +25,92 @@ namespace Editor.ViewModels
         private EditorShape? _selectedShape;
 
         [RelayCommand]
-        private void SetOvalMode()
+        private void ChangeMod(ShapeType shapeType)
         {
-            CurrentShapeType = CurrentShapeType == ShapeType.Oval ? ShapeType.None : ShapeType.Oval;
+            CurrentShapeType = shapeType;
         }
 
         public EditorViewModel()
         {
-            _model = new ShapeEditorModel();        }
+            _model = new ShapeEditorModel();        
+        }
 
         public ObservableCollection<EditorShape> Shapes => _model.Shapes;
 
-        public void StartCreatingShape(Point position)
+        public void StartDrawing(Point position)
         {
             if (CurrentShapeType == ShapeType.None) return;
 
             _startPoint = position;
             IsDrawing = true;
 
-            _currentDrawingShape = _model.CreateShape(CurrentShapeType, position, 0, 0);
+            if (CurrentShapeType == ShapeType.Oval)
+            {
+                _currentShape = _model.CreateShape(ShapeType.Oval, position, 0, 0);
+            }
+            else if (CurrentShapeType == ShapeType.BezierCurve)
+            {
+                _currentShape = new BezCurShape();
+                Shapes.Add(_currentShape);
+                ((BezCurShape)_currentShape).Points.Add(position);
+            }
         }
 
-        public void UpdateShapeSize(Point currentPoint)
+        public void UpdateDrawing(Point position)
         {
-            if (!IsDrawing || _currentDrawingShape == null) return;
+            if (!IsDrawing || _currentShape == null) return;
 
-            var x = System.Math.Min(_startPoint.X, currentPoint.X);
-            var y = System.Math.Min(_startPoint.Y, currentPoint.Y);
-            var width = System.Math.Abs(currentPoint.X - _startPoint.X);
-            var height = System.Math.Abs(currentPoint.Y - _startPoint.Y);
-
-            _currentDrawingShape.X = x;
-            _currentDrawingShape.Y = y;
-            _currentDrawingShape.Width = width;
-            _currentDrawingShape.Height = height;
+            if (CurrentShapeType == ShapeType.Oval)
+            {
+                UpdateOval(position);
+            }
+            else if (CurrentShapeType == ShapeType.BezierCurve)
+            {
+                UpdateBezier(position);
+            }
         }
 
-        public void FinishCreatingShape()
+        public void FinishDrawing(Point position)
         {
             if (!IsDrawing) return;
 
-            IsDrawing = false;
-
-            if (_currentDrawingShape != null)
+            if (CurrentShapeType == ShapeType.Oval)
             {
-                if (_currentDrawingShape.Width < 2 || _currentDrawingShape.Height < 2)
+                if (_currentShape?.Width < 2 || _currentShape?.Height < 2)
                 {
-                    Shapes.Remove(_currentDrawingShape);
+                    _model.RemoveShape(_currentShape);
                 }
-                else
+            }
+            else if (CurrentShapeType == ShapeType.BezierCurve)
+            {
+                if (_currentShape is BezCurShape bezier && bezier.Points.Count < 2)
                 {
-                    SelectedShape = _currentDrawingShape;
+                    _model.RemoveShape(_currentShape);
                 }
+            }
 
-                _currentDrawingShape = null;
+            IsDrawing = false;
+            _currentShape = null;
+        }
+
+        private void UpdateOval(Point position)
+        {
+            var x = Math.Min(_startPoint.X, position.X);
+            var y = Math.Min(_startPoint.Y, position.Y);
+            var width = Math.Abs(position.X - _startPoint.X);
+            var height = Math.Abs(position.Y - _startPoint.Y);
+
+            _currentShape.X = x;
+            _currentShape.Y = y;
+            _currentShape.Width = width;
+            _currentShape.Height = height;
+        }
+
+        private void UpdateBezier(Point position)
+        {
+            if (_currentShape is BezCurShape bezier && bezier.Points.Count > 0)
+            {
+                bezier.Points[^1] = position;
             }
         }
     }

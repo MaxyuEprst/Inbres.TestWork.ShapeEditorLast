@@ -13,30 +13,29 @@ namespace Editor
         }
         private void OnCanvasPointerPressed(object? sender, PointerPressedEventArgs e)
         {
-            if (DataContext is EditorViewModel viewModel && sender is Border border)
+            if (DataContext is EditorViewModel vm && sender is Border border)
             {
                 var position = e.GetCurrentPoint(border).Position;
-
-                viewModel.StartCreatingShape(position);
-
+                vm.StartDrawing(position);
                 e.Pointer.Capture(border);
             }
         }
 
         private void OnCanvasPointerMoved(object? sender, PointerEventArgs e)
         {
-            if (DataContext is EditorViewModel viewModel && sender is Border border)
+            if (DataContext is EditorViewModel vm && sender is Border border)
             {
-                var currentPosition = e.GetCurrentPoint(border).Position;
-                viewModel.UpdateShapeSize(currentPosition);
+                var position = e.GetCurrentPoint(border).Position;
+                vm.UpdateDrawing(position);
             }
         }
 
         private void OnCanvasPointerReleased(object? sender, PointerReleasedEventArgs e)
         {
-            if (DataContext is EditorViewModel viewModel)
+            if (DataContext is EditorViewModel vm && sender is Border border)
             {
-                viewModel.FinishCreatingShape();
+                var position = e.GetCurrentPoint(border).Position;
+                vm.FinishDrawing(position);
                 e.Pointer.Capture(null);
             }
         }
