@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using Avalonia;
 using Editor.Entities.Shape.Models;
 
-namespace Editor.Widgets.Editor
+namespace Editor.Shared
 {
     internal class ShapeEditorModel
     {

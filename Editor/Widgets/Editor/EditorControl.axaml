@@ -4,6 +4,7 @@
              xmlns:local="using:Editor.Widgets.Editor"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:shapes="using:Editor.Entities.Shape.Models"
+             xmlns:shared="using:Editor.Shared"
              xmlns:system="using:System"
              xmlns:vm="using:Editor.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -25,13 +26,13 @@
             Margin="14,6">
     <Button Content="Oval"
             Command="{Binding ChangeModCommand}"
-            CommandParameter="{x:Static shapes:ShapeType.Oval}" />
+            CommandParameter="{x:Static shared:ShapeType.Oval}" />
     <Button Content="Bezier Curve" 
             Command="{Binding ChangeModCommand}"
-            CommandParameter="{x:Static shapes:ShapeType.BezierCurve}" />
+            CommandParameter="{x:Static shared:ShapeType.BezierCurve}" />
     <Button Content="Select"
             Command="{Binding ChangeModCommand}"
-            CommandParameter="{x:Static shapes:ShapeType.None}" />
+            CommandParameter="{x:Static shared:ShapeType.None}" />
         <Label Content="{Binding Shapes.Count}" VerticalAlignment="Center"/>
         <Label Content="{Binding CurrentShapeType}" VerticalAlignment="Center"/>
         </StackPanel>

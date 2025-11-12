@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Editor.Entities.Shape.Models;
 using Editor.Shared;
-using Editor.Widgets.Editor;
 using System;
 using System.Collections.ObjectModel;
 

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Editor.Shared;
 
 namespace Editor.Entities.Shape.Models
     {
@@ -17,12 +18,5 @@ namespace Editor.Entities.Shape.Models
 
             [ObservableProperty]
             private double _height;
-        }
-
-        public enum ShapeType
-        {
-            Oval,
-            BezierCurve,
-            None
         }
     }
