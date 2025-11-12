@@ -8,7 +8,9 @@
              xmlns:vm="using:Editor.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Editor.EditorControl"
-             x:DataType="vm:EditorViewModel">
+             x:DataType="vm:EditorViewModel"
+                 Focusable="True"
+    KeyDown="OnKeyDown">
 
 
       <Grid>

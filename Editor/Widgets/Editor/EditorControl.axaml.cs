@@ -39,5 +39,13 @@ namespace Editor
                 e.Pointer.Capture(null);
             }
         }
+
+        private void OnKeyDown(object? sender, KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            if (DataContext is EditorViewModel vm)
+                vm.OnKeyPressed(e.Key);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Editor.Entities.Shape.Models;
@@ -62,45 +63,50 @@ namespace Editor.ViewModels
                 return;
             }
 
-
             if (CurrentShapeType == ShapeType.BezierCurve)
             {
                 if (!_isBezierControlPhase)
                 {
-                    var bez = new BezCurShape();
+                        var bez = new BezCurShape();
                     Shapes.Add(bez);
                     _currentShape = bez;
 
+                    bez.Points.Add(position); 
                     bez.Points.Add(position);
-                    bez.Points.Add(position);
+                    bez.Points.Add(position); 
 
                     _bezierPointsCount = 1;
                     IsDrawing = true;
                     _isBezierControlPhase = true;
                 }
-                else
+                else if (_currentShape is BezCurShape bezier)
                 {
-                    if (_currentShape is BezCurShape bezier)
-                    {
-                        _bezierPointsCount++;
+                    _bezierPointsCount++;
 
-                        if (_bezierPointsCount == 2)
-                        {
-                            bezier.Points.Add(position);
-                            bezier.Points.Add(position);
-                        }
-                        else if (_bezierPointsCount == 3)
-                        {
-                            bezier.Points[2] = position;
-                            CompleteBezierDrawing();
-                        }
+                    int lastIndex = bezier.Points.Count - 1;
+
+                    if (_bezierPointsCount == 2)
+                    {
+                        bezier.Points[lastIndex - 1] = position;
+                    }
+                    else if (_bezierPointsCount == 3)
+                    {
+                        bezier.Points[lastIndex] = position;
+
+                        var lastPoint = position;
+                        bezier.Points.Add(lastPoint); 
+                        bezier.Points.Add(lastPoint); 
+
+                        _bezierPointsCount = 1; 
                     }
                 }
             }
         }
+
         public void OnPointerMoved(Point position)
         {
-            if (CurrentShapeType == ShapeType.None) return;
+            if (CurrentShapeType == ShapeType.None)
+                return;
 
             if (CurrentShapeType == ShapeType.Oval)
             {
@@ -109,19 +115,22 @@ namespace Editor.ViewModels
             }
             else if (CurrentShapeType == ShapeType.BezierCurve)
             {
-                if (_isBezierControlPhase && _currentShape is BezCurShape bezier)
+                if (_isBezierControlPhase && _currentShape is BezCurShape bezier && bezier.Points.Count >= 3)
                 {
-                    if (_bezierPointsCount == 1 && bezier.Points.Count >= 2)
+                    int lastIndex = bezier.Points.Count - 1;
+
+                    if (_bezierPointsCount == 1)
                     {
-                        bezier.Points[1] = position;
+                        bezier.Points[lastIndex - 1] = position;
                     }
-                    else if (_bezierPointsCount == 2 && bezier.Points.Count >= 3)
+                    else if (_bezierPointsCount == 2)
                     {
-                        bezier.Points[2] = position;
+                        bezier.Points[lastIndex] = position;
                     }
                 }
             }
         }
+
 
         public void OnPointerReleased(Point position)
         {
@@ -178,6 +187,14 @@ namespace Editor.ViewModels
 
             IsDrawing = false;
             _isBezierControlPhase = false;
+        }
+
+        internal void OnKeyPressed(Key key)
+        {
+            if (key == Key.Escape && (_isBezierControlPhase || IsDrawing))
+            {
+                CompleteBezierDrawing();
+            }
         }
     }
 }
