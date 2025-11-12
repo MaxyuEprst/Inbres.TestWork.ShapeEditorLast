@@ -15,7 +15,7 @@ namespace Editor.Widgets.Editor
 
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value is not ObservableCollection<Point> points || points.Count < 2)
+            if (value is not ObservableCollection<Point> points || points.Count < 3)
                 return null;
 
             var geometry = new StreamGeometry();
@@ -23,30 +23,16 @@ namespace Editor.Widgets.Editor
             using (var ctx = geometry.Open())
             {
                 ctx.BeginFigure(points[0], false);
-                for (int i = 0; i < points.Count; i++)
-                {
-                    Debug.WriteLine($"Point[{i}] = ({points[i].X:F2}, {points[i].Y:F2})");
-                }
-                Debug.WriteLine($"Total points: {points.Count}");
-                Debug.WriteLine("===============================");
-                if (points.Count == 2)
-                {
-                    ctx.LineTo(points[1]);
-                }
-                else
-                {
-                    int i = 1;
-                    for (; i + 1 < points.Count; i += 2)
-                    {
-                        var control = points[i];
-                        var end = points[i + 1];
-                        ctx.QuadraticBezierTo(control, end);
-                    }
 
-                    if (i < points.Count)
-                    {
-                        ctx.LineTo(points[i]);
-                    }
+                int fullSegments = (points.Count - 1) / 2; 
+
+                for (int i = 0; i < fullSegments; i++)
+                {
+                    int ctrlIndex = 1 + i * 2;
+                    int endIndex = 2 + i * 2;
+
+                    if (endIndex < points.Count)
+                        ctx.QuadraticBezierTo(points[ctrlIndex], points[endIndex]);
                 }
 
                 ctx.EndFigure(false);

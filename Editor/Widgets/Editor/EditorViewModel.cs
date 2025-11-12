@@ -44,6 +44,11 @@ namespace Editor.ViewModels
         public ObservableCollection<EditorShape> Shapes => _model.Shapes;
         private void CompleteBezierDrawing()
         {
+            if (_currentShape is BezCurShape bezier && _bezierPointsCount == 1)
+            {
+                bezier.Points.RemoveAt(bezier.Points.Count - 1);
+                bezier.Points.RemoveAt(bezier.Points.Count - 1);
+            }
             IsDrawing = false;
             _isBezierControlPhase = false;
             _bezierPointsCount = 0;
@@ -93,13 +98,17 @@ namespace Editor.ViewModels
                     {
                         bezier.Points[lastIndex] = position;
 
-                        var lastPoint = position;
-                        bezier.Points.Add(lastPoint); 
-                        bezier.Points.Add(lastPoint); 
+                        if (_isBezierControlPhase)
+                        {
+                            var lastPoint = position;
+                            bezier.Points.Add(lastPoint); 
+                            bezier.Points.Add(lastPoint); 
+                        }
 
-                        _bezierPointsCount = 1; 
+                        _bezierPointsCount = 1;
                     }
                 }
+
             }
         }
 
