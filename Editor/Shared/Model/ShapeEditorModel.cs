@@ -13,7 +13,7 @@ namespace Editor.Shared
         {
             EditorShape newShape = shapeType switch
             {
-                ShapeType.Oval => new OvalShape {Width= width, Height= height, X = point.X, Y = point.Y },
+                ShapeType.Oval => new OvalShape {Width = width, Height = height, X = point.X, Y = point.Y },
                 ShapeType.BezierCurve => new BezCurShape { X = point.X, Y = point.Y },
                 _ => throw new NotImplementedException()
             };

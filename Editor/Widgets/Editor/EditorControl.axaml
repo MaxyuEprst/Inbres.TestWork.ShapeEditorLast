@@ -40,7 +40,6 @@
             Command="{Binding ClearAllCommand}"
             CommandParameter="{x:Static shared:ShapeType.None}" />
         <Label Content="{Binding Shapes.Count}" VerticalAlignment="Center"/>
-        <Label Content="{Binding CurrentShapeType}" VerticalAlignment="Center"/>
         </StackPanel>
         <Border Grid.Row="1" 
                 Background="Transparent"

@@ -25,7 +25,6 @@ namespace Editor.ViewModels
             get => _currentShapeType;
             set
             {
-                if (_currentShapeType == value) return;
                 _currentShapeType = value;
                 CancelCurrentDrawing();
                 SetDrawerForShape(value);
