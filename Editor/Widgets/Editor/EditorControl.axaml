@@ -37,9 +37,10 @@
             Command="{Binding ClearAllCommand}"
             CommandParameter="{x:Static shared:ShapeType.None}" />    
     <Button Content="💾"
-            Command="{Binding ClearAllCommand}"
-            CommandParameter="{x:Static shared:ShapeType.None}" />
+            Command="{Binding SaveShapesCommand}" />
+    <Button Content="⬇️" Command="{Binding LoadShapesCommand}"/>
         <Label Content="{Binding Shapes.Count}" VerticalAlignment="Center"/>
+        <Label Content="{Binding StatusMessage}" VerticalAlignment="Center"/>
         </StackPanel>
         <Border Grid.Row="1" 
                 Background="Transparent"

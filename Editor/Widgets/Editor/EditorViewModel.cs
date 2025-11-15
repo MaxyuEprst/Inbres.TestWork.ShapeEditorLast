@@ -4,8 +4,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Editor.Entities.Shape.Models;
 using Editor.Features.Drawing;
+using Editor.Features.Saving;
 using Editor.Shared;
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Editor.ViewModels
 {
@@ -13,28 +17,36 @@ namespace Editor.ViewModels
     {
         private readonly ShapeEditorModel _model;
         private IShapeDrawer? _currentDrawer;
-        private ShapeType _currentShapeType;
+        private FileShapeStorage? _shapeStorage;
 
-        public ObservableCollection<EditorShape> Shapes => _model.Shapes;
+        private FileShapeStorage ShapeStorage => _shapeStorage ??= new FileShapeStorage(new ShapeSerializer());
+
+        [ObservableProperty]
+        private ShapeType _currentShapeType = ShapeType.None;
+
+        [ObservableProperty]
+        private string _statusMessage = "Ready";
 
         [ObservableProperty]
         private EditorShape? _selectedShape;
 
-        public ShapeType CurrentShapeType
-        {
-            get => _currentShapeType;
-            set
-            {
-                _currentShapeType = value;
-                CancelCurrentDrawing();
-                SetDrawerForShape(value);
-            }
-        }
+        public ObservableCollection<EditorShape> Shapes => _model.Shapes;
 
         public EditorViewModel()
         {
             _model = new ShapeEditorModel();
-            SetDrawerForShape(ShapeType.None);
+
+            // Явно устанавливаем drawer при инициализации
+            SetDrawerForShape(CurrentShapeType);
+
+            LoadShapesOnStartup();
+        }
+
+        // Этот метод вызывается при изменении CurrentShapeType через свойство
+        partial void OnCurrentShapeTypeChanged(ShapeType value)
+        {
+            CancelCurrentDrawing();
+            SetDrawerForShape(value);
         }
 
         [RelayCommand]
@@ -42,6 +54,52 @@ namespace Editor.ViewModels
 
         [RelayCommand]
         private void ClearAll() => _model.ClearShapes();
+
+        [RelayCommand]
+        private async Task SaveShapesAsync()
+        {
+            try
+            {
+                await ShapeStorage.SaveShapesAsync(Shapes.ToList());
+                StatusMessage = $"Saved {Shapes.Count} shapes";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Save failed: {ex.Message}";
+            }
+        }
+
+        [RelayCommand]
+        private async Task LoadShapesAsync()
+        {
+            try
+            {
+                var shapes = await ShapeStorage.LoadShapesAsync();
+                _model.LoadShapes(shapes);
+                StatusMessage = $"Loaded {shapes.Count} shapes";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Load failed: {ex.Message}";
+            }
+        }
+
+        private async void LoadShapesOnStartup()
+        {
+            try
+            {
+                var shapes = await ShapeStorage.LoadShapesAsync();
+                if (shapes.Any())
+                {
+                    _model.LoadShapes(shapes);
+                    StatusMessage = $"Auto-loaded {shapes.Count} shapes";
+                }
+            }
+            catch
+            {
+                // Игнорируем ошибки при автозагрузке
+            }
+        }
 
         private void SetDrawerForShape(ShapeType type)
         {
@@ -51,10 +109,15 @@ namespace Editor.ViewModels
                 ShapeType.BezierCurve => new BezierDrawer(_model),
                 _ => null
             };
+
+            // Обновляем статус
+            StatusMessage = type == ShapeType.None ? "Select shape type" : $"Drawing: {type}";
         }
 
         public void OnPointerPressed(Point position, PointerUpdateKind updateKind)
         {
+            if (CurrentShapeType == ShapeType.None) return;
+
             if (updateKind == PointerUpdateKind.RightButtonPressed)
             {
                 _currentDrawer?.Cancel();

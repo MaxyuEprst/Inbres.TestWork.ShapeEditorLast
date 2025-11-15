@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Avalonia;
 using Editor.Entities.Shape.Models;
@@ -30,6 +31,15 @@ namespace Editor.Shared
         public void ClearShapes()
         {
             Shapes.Clear();
+        }
+
+        public void LoadShapes(IEnumerable<EditorShape> shapes)
+        {
+            Shapes.Clear();
+            foreach (var shape in shapes)
+            {
+                Shapes.Add(shape);
+            }
         }
     }
 }
