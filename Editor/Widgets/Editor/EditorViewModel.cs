@@ -36,13 +36,11 @@ namespace Editor.ViewModels
         {
             _model = new ShapeEditorModel();
 
-            // Явно устанавливаем drawer при инициализации
             SetDrawerForShape(CurrentShapeType);
 
             LoadShapesOnStartup();
         }
 
-        // Этот метод вызывается при изменении CurrentShapeType через свойство
         partial void OnCurrentShapeTypeChanged(ShapeType value)
         {
             CancelCurrentDrawing();
@@ -96,9 +94,7 @@ namespace Editor.ViewModels
                 }
             }
             catch
-            {
-                // Игнорируем ошибки при автозагрузке
-            }
+            {            }
         }
 
         private void SetDrawerForShape(ShapeType type)
@@ -110,7 +106,6 @@ namespace Editor.ViewModels
                 _ => null
             };
 
-            // Обновляем статус
             StatusMessage = type == ShapeType.None ? "Select shape type" : $"Drawing: {type}";
         }
 
